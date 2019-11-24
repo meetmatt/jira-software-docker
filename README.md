@@ -18,9 +18,6 @@ vim .env
 # Download Java MySQL connector
 make download-mysql-connector
 
-# Build JIRA image
-make build-jira-image
-
 # Run containers
 make start-containers
 
