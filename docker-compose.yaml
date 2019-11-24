@@ -29,9 +29,9 @@ services:
     volumes:
       - mysql_volume:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: jira
-      MYSQL_USER: jira
-      MYSQL_PASSWORD: jira
+      MYSQL_DATABASE: "${JIRA_DATABASE_DBNAME}"
+      MYSQL_USER: "${JIRA_DATABASE_USER}"
+      MYSQL_PASSWORD: "${JIRA_DATABASE_PASSWORD}"
       MYSQL_RANDOM_ROOT_PASSWORD: 1
 
   jira:
