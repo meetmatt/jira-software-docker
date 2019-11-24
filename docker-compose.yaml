@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./var/nginx/certs:/etc/nginx/certs
+      - ./var/nginx/vhost.d:/etc/nginx/vhost.d
+      - ./var/nginx/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    depends_on:
+      - nginx-proxy
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: jira
+      MYSQL_USER: jira
+      MYSQL_PASSWORD: jira
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+
+  jira:
+    image: atlassian/jira-software:8
+    restart: always
+    volumes:
+      - jira_volume:/var/atlassian/application-data/jira
+      - ./jira/mysql-connector-java-5.1.48/mysql-connector-java-5.1.48.jar:/opt/atlassian/jira/lib
+    depends_on:
+      - mysql
+      - nginx-proxy
+      - letsencrypt
+    environment:
+      JVM_MINIMUM_MEMORY: 150m
+      JVM_MAXIMUM_MEMORY: 786m
+      VIRTUAL_HOST: "${JIRA_HOSTNAME}"
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: "${JIRA_HOSTNAME}"
+      LETSENCRYPT_EMAIL: "${JIRA_LETSENCRYPT_EMAIL}"
+      ATL_PROXY_NAME: "${JIRA_HOSTNAME}"
+      ATL_PROXY_PORT: 433
+      ATL_JDBC_URL: "jdbc:mysql://mysql:3306/${JIRA_DATABASE_DBNAME}?useUnicode=true&amp;useSSL=false&amp;characterEncoding=UTF8&amp;sessionVariables=default_storage_engine=InnoDB"
+      ATL_JDBC_USER: "${JIRA_DATABASE_USER}"
+      ATL_JDBC_PASSWORD: "${JIRA_DATABASE_PASSWORD}"
+      ATL_DB_SCHEMA_NAME: "${JIRA_DATABASE_DBNAME}"
+      ATL_DB_DRIVER: com.mysql.jdbc.Driver
+      ATL_DB_TYPE: mysql
+
+volumes:
+  mysql_volume:
+  jira_volume:
