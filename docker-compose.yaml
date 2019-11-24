@@ -52,7 +52,7 @@ services:
       LETSENCRYPT_HOST: "${JIRA_HOSTNAME}"
       LETSENCRYPT_EMAIL: "${JIRA_LETSENCRYPT_EMAIL}"
       ATL_PROXY_NAME: "${JIRA_HOSTNAME}"
-      ATL_PROXY_PORT: 433
+      ATL_PROXY_PORT: 80
       ATL_JDBC_URL: "jdbc:mysql://mysql:3306/${JIRA_DATABASE_DBNAME}?useUnicode=true&amp;useSSL=false&amp;characterEncoding=UTF8&amp;sessionVariables=default_storage_engine=InnoDB"
       ATL_JDBC_USER: "${JIRA_DATABASE_USER}"
       ATL_JDBC_PASSWORD: "${JIRA_DATABASE_PASSWORD}"
