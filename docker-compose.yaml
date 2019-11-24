@@ -39,7 +39,7 @@ services:
     restart: always
     volumes:
       - jira_volume:/var/atlassian/application-data/jira
-      - ./jira/mysql-connector-java-5.1.48/mysql-connector-java-5.1.48.jar:/opt/atlassian/jira/lib
+      - ./mysql-connector-java-5.1.48/mysql-connector-java-5.1.48.jar:/opt/atlassian/jira/lib/mysql-connector-java-5.1.48.jar
     depends_on:
       - mysql
       - nginx-proxy
